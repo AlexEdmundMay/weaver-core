@@ -370,10 +370,13 @@ def flops(model, model_info):
 
     inputs = tuple(
         torch.ones(model_info['input_shapes'][k], dtype=torch.float32) for k in model_info['input_names'])
-
-    macs, params = get_model_complexity_info(model, inputs, as_strings=True, print_per_layer_stat=True, verbose=True)
-    _logger.info('{:<30}  {:<8}'.format('Computational complexity: ', macs))
-    _logger.info('{:<30}  {:<8}'.format('Number of parameters: ', params))
+    from torchinfo import summary
+    _logger.info("torchinfo summary:")
+    _logger.info("Model Info:",model_info['input_shapes'].keys())
+    _logger.info(summary(model,input_data=inputs))
+    #macs, params = get_model_complexity_info(model, inputs, as_strings=True, print_per_layer_stat=True, verbose=True)
+    #_logger.info('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+    #_logger.info('{:<30}  {:<8}'.format('Number of parameters: ', params))
 
 def profile(args, model, model_info, device):
     """

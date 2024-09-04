@@ -75,8 +75,8 @@ class Eq2to0(nn.Module):
                 op = self.ops_func(inputs, nobj=nobj, nobj_avg=self.average_nobj, aggregation=d[char], weight=irc_weight)
             elif char in ['S', 'M', 'X', 'N']:
                 op = self.ops_func(inputs, nobj=nobj, nobj_avg=self.average_nobj, aggregation=d[char.lower()], weight=irc_weight)
-                mult = (nobj).view([-1,1,1])**self.alphas[i]
-                mult = mult / (self.average_nobj** self.alphas[i])
+                mult = (nobj).view([-1,1,1])**self.alphas[i].to(device='cuda')
+                mult = mult / (self.average_nobj** self.alphas[i].to(device='cuda'))
                 op = op * mult            
             else:
                 raise ValueError("args.config must consist of the following letters: smxnSMXN", self.config)
@@ -150,8 +150,8 @@ class Eq1to2(nn.Module):
                 op = self.ops_func(inputs, nobj, self.average_nobj, aggregation=d[char], weight=irc_weight)
             elif char in ['S', 'M', 'X', 'N']:
                 op = self.ops_func(inputs, nobj, self.average_nobj, aggregation=d[char.lower()], weight=irc_weight)
-                mult = (nobj).view([-1,1,1,1,1])**self.alphas[i]
-                mult = mult / (self.average_nobj** self.alphas[i])
+                mult = (nobj).view([-1,1,1,1,1])**self.alphas[i].to(device='cuda')
+                mult = mult / (self.average_nobj** self.alphas[i].to(device='cuda'))
                 op = op * mult
             else:
                 raise ValueError("args.config must consist of the following letters: smxnSMXN", self.config)
@@ -227,8 +227,8 @@ class Eq2to1(nn.Module):
                 op = self.ops_func(inputs, nobj, self.average_nobj, aggregation=d[char], weight=irc_weight)
             elif char in ['S', 'M', 'X', 'N']:
                 op = self.ops_func(inputs, nobj, self.average_nobj, aggregation=d[char.lower()], weight=irc_weight)
-                mult = (nobj).view([-1,1,1,1])**self.alphas[i]
-                mult = mult / (self.average_nobj** self.alphas[i])
+                mult = (nobj).view([-1,1,1,1])**self.alphas[i].to(device='cuda')
+                mult = mult / (self.average_nobj** self.alphas[i].to(device='cuda'))
                 op = op * mult
             else:
                 raise ValueError("args.config must consist of the following letters: smxnSMXN", self.config)
@@ -310,9 +310,9 @@ class Eq2to2(nn.Module):
                 op = self.ops_func(inputs, nobj, self.average_nobj, aggregation=d[char.lower()], weight=irc_weight, skip_order_zero=False if i==0 else True, folklore = self.folklore)
                 if char in ['S', 'M', 'X', 'N']:
                     if i==0:
-                        alphas = torch.cat([self.dummy_alphas, self.alphas[0]], dim=2)
+                        alphas = torch.cat([self.dummy_alphas, self.alphas[0].to(device='cuda')], dim=2)
                     else:
-                        alphas = self.alphas[i]
+                        alphas = self.alphas[i].to(device='cuda')
                     mult = (nobj).view([-1,1,1,1,1])**alphas
                     mult = mult / (self.average_nobj**alphas)
                     op = op * mult
